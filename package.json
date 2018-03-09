@@ -1,0 +1,29 @@
+{
+  "name": "react-micro",
+  "version": "0.0.1",
+  "description": "React component for displaying UI-microservices",
+  "main": "build/index.js",
+  "author": "Harun Djulic <harundulic@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/HarunD/react-micro",
+  "bugs": "https://github.com/HarunD/react-micro/issues",
+  "repository": {
+    "url": "https://github.com/HarunD/react-micro",
+    "type": "git"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "webpack",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "react": "^16.2.0"
+  },
+  "devDependencies": {
+    "storybook": "^1.0.0",
+    "webpack": "^4.1.1"
+  }
+}
