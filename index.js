@@ -17,7 +17,7 @@ export default class Micro extends PureComponent {
         try {
             p = await contentPromise
         } catch (err) {
-            console.log("ERRR +++++ ", err)
+            console.error("react-micro : ", err)
         }
 
         this.setContent(p.data)
