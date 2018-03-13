@@ -7,6 +7,10 @@ const UNIQUE_ID = Math
     .substr(2, 5) + '_' + new Date().getTime();
 
 export default class Micro extends PureComponent {
+    state = {
+        shouldRenderMicro: false
+    }
+
     componentDidMount() {
         this.fetchContent(this.props.contentPromise)
     }
@@ -20,7 +24,11 @@ export default class Micro extends PureComponent {
             console.error("react-micro : ", err)
         }
 
-        this.setContent(p.data)
+        if (p) {
+            this.setState({shouldRenderMicro: true}, () => {
+                this.setContent(p.data)
+            });            
+        }
     }
 
     setContent = content => {
@@ -28,6 +36,38 @@ export default class Micro extends PureComponent {
         document
             .getElementById(`frame_${UNIQUE_ID}`)
             .src = DATA_URL
+
+        setTimeout(() => {
+            this.setStyles()
+        }, 300)
+    }
+
+    styleContent = () => {
+        const ES = this.props.elementStyles
+        const RE = document.getElementById(`frame_${UNIQUE_ID}`)
+        ES.forEach(el => {
+            let $ = RE
+                .contentDocument
+                .getElementById(el.id)
+            if ($) {
+                $.style.cssText += `; ${el.style}`
+            }
+        });
+    }
+
+    setIframeVisible = () => {
+        let I = document.getElementById(`frame_${UNIQUE_ID}`)
+
+        I.contentDocument.body.style.margin = 0;
+        I.style.visibility = 'visible';
+    }
+
+    setStyles = () => {
+        if (this.props.elementStyles && this.props.elementStyles.length > 0) {
+            this.styleContent()
+        }
+
+        this.setIframeVisible()
     }
 
     renderContent = settings => {
@@ -38,13 +78,20 @@ export default class Micro extends PureComponent {
                 id={`frame_${UNIQUE_ID}`}
                 title={iframeTitle}
                 className={`ReactMicro__Frame ${iframeClassName}`}
-                style={iframeStyle}></iframe>
+                style={{
+                ...iframeStyle,
+                visibility: 'hidden'
+            }}></iframe>
         )
     }
 
     render() {
-        let {rootClassName, rootStyle} = this.props
+        if(!this.state.shouldRenderMicro) {
+            return null;
+        }
 
+        let {rootClassName, rootStyle} = this.props
+        
         return (
             <span className={`ReactMicro ${rootClassName}`} style={rootStyle}>
                 {this.renderContent(this.props)}
@@ -54,6 +101,7 @@ export default class Micro extends PureComponent {
 }
 
 Micro.defaultProps = {
+    elementStyles: [],
     iframeClassName: '',
     iframeStyle: {
         border: 'none',
@@ -67,6 +115,7 @@ Micro.defaultProps = {
 }
 
 Micro.PropTypes = {
+    elementStyles: PropTypes.arrayOf.object,
     contentPromise: PropTypes.isRequired,
     iframeStyle: PropTypes.object,
     rootClassName: PropTypes.string,
