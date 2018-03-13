@@ -25,9 +25,11 @@ export default class Micro extends PureComponent {
         }
 
         if (p) {
-            this.setState({shouldRenderMicro: true}, () => {
+            this.setState({
+                shouldRenderMicro: true
+            }, () => {
                 this.setContent(p.data)
-            });            
+            })
         }
     }
 
@@ -43,8 +45,9 @@ export default class Micro extends PureComponent {
     }
 
     styleContent = () => {
-        const ES = this.props.elementStyles
         const RE = document.getElementById(`frame_${UNIQUE_ID}`)
+        const ES = this.props.elementStyles
+
         ES.forEach(el => {
             let $ = RE
                 .contentDocument
@@ -57,9 +60,8 @@ export default class Micro extends PureComponent {
 
     setIframeVisible = () => {
         let I = document.getElementById(`frame_${UNIQUE_ID}`)
-
-        I.contentDocument.body.style.margin = 0;
-        I.style.visibility = 'visible';
+        I.contentDocument.body.style.margin = 0
+        I.style.visibility = 'visible'
     }
 
     setStyles = () => {
@@ -86,12 +88,12 @@ export default class Micro extends PureComponent {
     }
 
     render() {
-        if(!this.state.shouldRenderMicro) {
-            return null;
+        if (!this.state.shouldRenderMicro) {
+            return null
         }
 
         let {rootClassName, rootStyle} = this.props
-        
+
         return (
             <span className={`ReactMicro ${rootClassName}`} style={rootStyle}>
                 {this.renderContent(this.props)}
@@ -116,7 +118,7 @@ Micro.defaultProps = {
 
 Micro.PropTypes = {
     elementStyles: PropTypes.arrayOf.object,
-    contentPromise: PropTypes.isRequired,
+    contentPromise: PropTypes.objectOf({then: PropTypes.func, catch: PropTypes.func}),
     iframeStyle: PropTypes.object,
     rootClassName: PropTypes.string,
     rootStyle: PropTypes.object,
