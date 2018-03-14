@@ -4,34 +4,49 @@ import PropTypes from 'prop-types'
 const UNIQUE_ID = Math
     .random()
     .toString(36)
-    .substr(2, 5) + '_' + new Date().getTime();
+    .substr(2, 5) + '_' + new Date().getTime()
 
 export default class Micro extends PureComponent {
     state = {
-        shouldRenderMicro: false
+        shouldRender: false
     }
 
     componentDidMount() {
-        this.fetchContent(this.props.contentPromise)
+        switch (this.props.contentSource) {
+            case 'promise':
+                this.fetchContentFromPromise(this.props.contentPromise);
+                break;
+
+            case 'url':
+                this.fetchContentWithURL(this.props.contentURL);
+                break;
+
+            default:
+                break;
+        }
     }
 
-    fetchContent = async contentPromise => {
+    fetchContentFromPromise = async contentPromise => {
         let p
 
         try {
             p = await contentPromise
         } catch (err) {
-            console.error("react-micro : ", err)
+            if (this.state.shouldLog) {
+                console.error("react-micro : ", err)
+            }
         }
 
-        if (p) {
+        if (p && p.data && p.data.size > 0) {
             this.setState({
-                shouldRenderMicro: true
+                shouldRender: true
             }, () => {
                 this.setContent(p.data)
             })
         }
     }
+
+    fetchContentWithURL = () => {}
 
     setContent = content => {
         const DATA_URL = URL.createObjectURL(content)
@@ -44,36 +59,39 @@ export default class Micro extends PureComponent {
         }, 300)
     }
 
-    styleContent = () => {
-        const RE = document.getElementById(`frame_${UNIQUE_ID}`)
-        const ES = this.props.elementStyles
+    setStyles = () => {
+        this.styleContent(this.props.elementStyles)
+        this.setIframeStyle(this.props.iframeStyle)
+    }
 
-        ES.forEach(el => {
+    // Style elements inside the iframe based on the provided
+    // element_id=>element_style pairs
+    styleContent = styles => {
+        if (!styles || styles.length === 0) {
+            return
+        }
+
+        const RE = document.getElementById(`frame_${UNIQUE_ID}`)
+
+        styles.forEach(el => {
             let $ = RE
                 .contentDocument
                 .getElementById(el.id)
             if ($) {
                 $.style.cssText += `; ${el.style}`
             }
-        });
+        })
     }
 
-    setIframeVisible = () => {
+    setIframeStyle = iframeStyle => {
         let I = document.getElementById(`frame_${UNIQUE_ID}`)
         I.contentDocument.body.style.margin = 0
         I.style.visibility = 'visible'
-    }
-
-    setStyles = () => {
-        if (this.props.elementStyles && this.props.elementStyles.length > 0) {
-            this.styleContent()
-        }
-
-        this.setIframeVisible()
+        I.style.cssText += `; ${iframeStyle}`
     }
 
     renderContent = settings => {
-        let {iframeClassName, iframeTitle, iframeStyle} = settings
+        let {iframeClassName, iframeTitle} = settings
 
         return (
             <iframe
@@ -81,14 +99,13 @@ export default class Micro extends PureComponent {
                 title={iframeTitle}
                 className={`ReactMicro__Frame ${iframeClassName}`}
                 style={{
-                ...iframeStyle,
                 visibility: 'hidden'
             }}></iframe>
         )
     }
 
     render() {
-        if (!this.state.shouldRenderMicro) {
+        if (!this.state.shouldRender) {
             return null
         }
 
@@ -103,24 +120,29 @@ export default class Micro extends PureComponent {
 }
 
 Micro.defaultProps = {
+    contentSource: 'promise',
     elementStyles: [],
     iframeClassName: '',
-    iframeStyle: {
-        border: 'none',
-        padding: 0,
-        margin: 0
-    },
+    iframeStyle: `
+        border: none;
+        padding: 0;
+        margin: 0;
+    `,
     iframeTitle: 'react-micro-iframe-' + UNIQUE_ID,
     rootClassName: '',
     rootStyle: {},
+    shouldLog: true,
     type: 'iframe'
 }
 
-Micro.PropTypes = {
-    elementStyles: PropTypes.arrayOf.object,
-    contentPromise: PropTypes.objectOf({then: PropTypes.func, catch: PropTypes.func}),
-    iframeStyle: PropTypes.object,
+Micro.propTypes = {
+    contentPromise: PropTypes.shape({then: PropTypes.func, catch: PropTypes.func}),
+    contentSource: PropTypes.string,
+    contentURL: PropTypes.string,
+    elementStyles: PropTypes.arrayOf(PropTypes.shape({id: PropTypes.string, style: PropTypes.string})),
+    iframeStyle: PropTypes.string,
     rootClassName: PropTypes.string,
     rootStyle: PropTypes.object,
+    shouldLog: PropTypes.bool,
     type: PropTypes.string
 }

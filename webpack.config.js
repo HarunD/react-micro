@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: './index.js',
+    entry: './src/Micro.js',
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'index.js',
@@ -22,9 +22,6 @@ module.exports = {
                         plugins: ['transform-class-properties']
                     }
                 }
-            }, {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
             }
         ]
     },
