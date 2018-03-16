@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/Micro.js',
+    entry: './src/Micro.tsx',
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: 'index.js',
@@ -10,10 +10,10 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.(tsx|js)?$/,
                 include: path.resolve(__dirname, 'src'),
                 exclude: /(node_modules|build)/,
-                use: {
+                use: [{
                     loader: 'babel-loader',
                     options: {
                         presets: [
@@ -21,7 +21,9 @@ module.exports = {
                         ],
                         plugins: ['transform-class-properties']
                     }
-                }
+                }, {
+                    loader: 'ts-loader'
+                }]
             }
         ]
     },
