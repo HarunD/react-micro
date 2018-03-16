@@ -1,10 +1,10 @@
-import React, {PureComponent} from 'react'
-import PropTypes from 'prop-types'
+import React, {PureComponent} from 'react';
+import PropTypes from 'prop-types';
 
 const UNIQUE_ID = Math
     .random()
     .toString(36)
-    .substr(2, 5) + '_' + new Date().getTime()
+    .substr(2, 5) + '_' + new Date().getTime();
 
 export default class Micro extends PureComponent {
     state = {
@@ -14,11 +14,11 @@ export default class Micro extends PureComponent {
     componentDidMount() {
         switch (this.props.contentSource) {
             case 'promise':
-                this.fetchContentFromPromise(this.props.contentPromise);
+                this.fetchContentViaPromise(this.props.contentPromise);
                 break;
 
             case 'url':
-                this.fetchContentWithURL(this.props.contentURL);
+                this.fetchContentViaURL(this.props.contentURL);
                 break;
 
             default:
@@ -26,14 +26,14 @@ export default class Micro extends PureComponent {
         }
     }
 
-    fetchContentFromPromise = async contentPromise => {
-        let p
+    fetchContentViaPromise = async contentPromise => {
+        let p;
 
         try {
-            p = await contentPromise
+            p = await contentPromise;
         } catch (err) {
-            if (this.state.shouldLog) {
-                console.error("react-micro : ", err)
+            if (this.props.shouldLog) {
+                console.error("react-micro : ", err);
             }
         }
 
@@ -41,57 +41,57 @@ export default class Micro extends PureComponent {
             this.setState({
                 shouldRender: true
             }, () => {
-                this.setContent(p.data)
-            })
+                this.setContent(p.data);
+            });
         }
     }
 
-    fetchContentWithURL = () => {}
+    fetchContentViaURL = () => {}
 
     setContent = content => {
-        const DATA_URL = URL.createObjectURL(content)
+        const DATA_URL = URL.createObjectURL(content);
         document
             .getElementById(`frame_${UNIQUE_ID}`)
-            .src = DATA_URL
+            .src = DATA_URL;
 
         setTimeout(() => {
-            this.setStyles()
-        }, 300)
+            this.setStyles();
+        }, 300);
     }
 
     setStyles = () => {
-        this.styleContent(this.props.elementStyles)
-        this.setIframeStyle(this.props.iframeStyle)
+        this.styleContent(this.props.elementStyles);
+        this.setIframeStyle(this.props.iframeStyle);
     }
 
     // Style elements inside the iframe based on the provided
     // element_id=>element_style pairs
     styleContent = styles => {
         if (!styles || styles.length === 0) {
-            return
+            return;
         }
 
-        const RE = document.getElementById(`frame_${UNIQUE_ID}`)
+        const RE = document.getElementById(`frame_${UNIQUE_ID}`);
 
         styles.forEach(el => {
             let $ = RE
                 .contentDocument
-                .getElementById(el.id)
+                .getElementById(el.id);
             if ($) {
-                $.style.cssText += `; ${el.style}`
+                $.style.cssText += `; ${el.style}`;
             }
-        })
+        });
     }
 
     setIframeStyle = iframeStyle => {
-        let I = document.getElementById(`frame_${UNIQUE_ID}`)
-        I.contentDocument.body.style.margin = 0
-        I.style.visibility = 'visible'
-        I.style.cssText += `; ${iframeStyle}`
+        let I = document.getElementById(`frame_${UNIQUE_ID}`);
+        I.contentDocument.body.style.margin = 0;
+        I.style.visibility = 'visible';
+        I.style.cssText += `; ${iframeStyle}`;
     }
 
     renderContent = settings => {
-        let {iframeClassName, iframeTitle} = settings
+        let {iframeClassName, iframeTitle} = settings;
 
         return (
             <iframe
@@ -101,21 +101,21 @@ export default class Micro extends PureComponent {
                 style={{
                 visibility: 'hidden'
             }}></iframe>
-        )
+        );
     }
 
     render() {
         if (!this.state.shouldRender) {
-            return null
+            return null;
         }
 
-        let {rootClassName, rootStyle} = this.props
+        let {rootClassName, rootStyle} = this.props;
 
         return (
             <span className={`ReactMicro ${rootClassName}`} style={rootStyle}>
                 {this.renderContent(this.props)}
             </span>
-        )
+        );
     }
 }
 

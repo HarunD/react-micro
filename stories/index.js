@@ -8,26 +8,26 @@ const HTML_A = `
   <html>
     <head></head>
     <body>
-      <h1 id="title">Content from a microservice rendered inside a Micro instance</h1>
+      <h1 id="title">Content of a microservice rendered inside a Micro instance</h1>
     </body>
   </html>
-`
+`;
 
 const IFRAME_STYLE_A = `  
   background-color:#f7f7f7;
   border:1px solid #eee;
   padding:20px;
   width: 33%;
-`
+`;
 
-const BLOB_A = new Blob([HTML_A], {type: 'text/html'})
+const BLOB_A = new Blob([HTML_A], {type: 'text/html'});
 
 const PROMISE_A = new Promise((resolve, reject) => {
   setTimeout(() => {
     if (true) {
-      resolve({data: BLOB_A})
+      resolve({data: BLOB_A});
     } else {
-      reject("NOK")
+      reject("NOK");
     }
   }, 200)
 });
