@@ -1,7 +1,7 @@
 {
   "name": "react-micro",
   "version": "0.0.21",
-  "description": "React component for displaying UI-microservices",
+  "description": "React component for displaying UI microservices",
   "main": "build/index.js",
   "author": "Harun Djulic <harundulic@gmail.com>",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "build"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "webpack",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

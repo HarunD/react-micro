@@ -1,29 +1,29 @@
 import React from 'react';
 
-interface MicroProps {
-    contentPromise: Promise < Blob >;
-    contentSource: string;
-    contentURL: string;
-    elementStyles: Array < ElementStyle >;
-    iframeClassName: string;
-    iframeStyle: string;
-    iframeTitle: string;
-    rootClassName: string;
-    rootStyle: object;
-    shouldLog: boolean;
-    type: string;
-}
-
 interface ElementStyle {
     id : string;
     style : string;
+}
+
+interface MicroProps {
+    contentPromise : Promise < Blob >;
+    contentSource : string;
+    contentURL : string;
+    elementStyles : Array < ElementStyle >;
+    iframeClassName : string;
+    iframeStyle : string;
+    iframeTitle : string;
+    rootClassName : string;
+    rootStyle : object;
+    shouldLog : boolean;
+    type : string;
 }
 
 interface MicroState {
     shouldRender : boolean;
 }
 
-const UNIQUE_ID = Math
+const UNIQUE_ID : string = Math
     .random()
     .toString(36)
     .substr(2, 5) + '_' + new Date().getTime();
@@ -57,7 +57,7 @@ MicroState > {
         this.fetchContentBySource(this.props.contentSource);
     }
 
-    fetchContentBySource = (source : string) => {
+    fetchContentBySource = (source : string) : void => {
         switch (source) {
             case 'promise':
                 this.fetchContentViaPromise(this.props.contentPromise);
@@ -92,14 +92,16 @@ MicroState > {
         }
     }
 
-    fetchContentViaURL = (contentURL : string) => {}
+    fetchContentViaURL = (contentURL : string) => {
+        // TODO
+    }
 
-    setContent = (content : any) => {
-        const DATA_URL = URL.createObjectURL(content);
+    setContent = (content : any) : void => {
+        const DATA_URL : string = URL.createObjectURL(content);
         const IFRAME : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
 
         if (IFRAME) {
-            IFRAME.src = DATA_URL
+            IFRAME.src = DATA_URL;
         }
 
         setTimeout(() => {
@@ -107,21 +109,20 @@ MicroState > {
         }, 300);
     }
 
-    setStyles = () => {
+    setStyles = () : void => {
         this.styleContent(this.props.elementStyles);
         this.setIframeStyle(this.props.iframeStyle);
     }
 
-    styleContent = (styles : Array < ElementStyle >) => {
+    styleContent = (styles : Array < ElementStyle >) : void => {
         if (!styles || styles.length === 0) {
             return;
         }
 
-        const IFRAME : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
-
-        if (IFRAME) {
-            styles.forEach(el => {
-                let $ = IFRAME
+        const $iframe : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
+        if ($iframe) {
+            styles.forEach((el : ElementStyle) => {
+                let $ : HTMLElement | null = $iframe
                     .contentDocument
                     .getElementById(el.id);
                 if ($) {
@@ -131,17 +132,17 @@ MicroState > {
         }
     }
 
-    setIframeStyle = (iframeStyle : string) => {
-        let IFRAME : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`) as HTMLIFrameElement;
-        if (IFRAME) {
-            IFRAME.contentDocument.body.style.margin = '0';
-            IFRAME.style.visibility = 'visible';
-            IFRAME.style.cssText += `; ${iframeStyle}`;
+    setIframeStyle = (iframeStyle : string) : void => {
+        const $iframe : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
+        if ($iframe) {
+            $iframe.contentDocument.body.style.margin = '0';
+            $iframe.style.visibility = 'visible';
+            $iframe.style.cssText += `; ${iframeStyle}`;
         }
     }
 
-    renderContent = (settings : MicroProps) => {
-        let {iframeClassName, iframeTitle} = settings;
+    renderContent = (settings : MicroProps) : JSX.Element => {
+        const {iframeClassName, iframeTitle} = settings;
 
         return (
             <iframe
