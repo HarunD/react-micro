@@ -1,6 +1,6 @@
 {
   "name": "react-micro",
-  "version": "0.0.21",
+  "version": "0.0.3",
   "description": "React component for displaying UI microservices",
   "main": "build/index.js",
   "author": "Harun Djulic <harundulic@gmail.com>",
