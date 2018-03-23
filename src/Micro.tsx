@@ -97,16 +97,19 @@ MicroState > {
     }
 
     setContent = (content : any) : void => {
-        const DATA_URL : string = URL.createObjectURL(content);
-        const IFRAME : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
-
-        if (IFRAME) {
-            IFRAME.src = DATA_URL;
+        if (!content) {
+            return;
         }
 
-        setTimeout(() => {
+        const $iframe : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
+        if (!$iframe) {
+            return;
+        }
+
+        $iframe.src = URL.createObjectURL(content);
+        $iframe.onload = () => {
             this.setStyles();
-        }, 300);
+        };
     }
 
     setStyles = () : void => {

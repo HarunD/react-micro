@@ -28,7 +28,7 @@ const PROMISE_A = new Promise((resolve, reject) => {
     } else {
       reject("NOK");
     }
-  }, 200)
+  }, 300)
 });
 
 storiesOf('Micro', module).add('simple with promise and basic styling of iframe', () => (
