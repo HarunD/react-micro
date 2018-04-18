@@ -150,6 +150,8 @@ MicroState > {
         return (
             <iframe
                 id={`frame_${UNIQUE_ID}`}
+                scrolling="no" 
+                frameBorder="0" 
                 title={iframeTitle}
                 className={`ReactMicro__Frame ${iframeClassName}`}
                 style={{
