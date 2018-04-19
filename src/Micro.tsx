@@ -106,10 +106,26 @@ MicroState > {
             return;
         }
 
-        $iframe.src = URL.createObjectURL(content);
-        $iframe.onload = () => {
-            this.setStyles();
-        };
+        const reader : FileReader = new FileReader();
+        reader.addEventListener('loadend', (e : any) => {
+            const HTML : string = e.srcElement
+                ? e.srcElement.result
+                : '';
+
+            let doc : Document | null = $iframe.contentWindow
+                ? $iframe.contentWindow.document
+                : null;
+
+            if (doc) {
+                doc.open();
+                doc.write(HTML);
+                doc.close();
+
+                this.setStyles();
+            }
+        });
+
+        reader.readAsText(content);
     }
 
     setStyles = () : void => {
@@ -125,9 +141,11 @@ MicroState > {
         const $iframe : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
         if ($iframe) {
             styles.forEach((el : ElementStyle) => {
-                let $ : HTMLElement | null = $iframe
-                    .contentDocument
-                    .getElementById(el.id);
+                let $ : HTMLElement | null = $iframe.contentDocument
+                    ? $iframe
+                        .contentDocument
+                        .getElementById(el.id)
+                    : null;
                 if ($) {
                     $.style.cssText += `; ${el.style}`;
                 }
@@ -137,10 +155,15 @@ MicroState > {
 
     setIframeStyle = (iframeStyle : string) : void => {
         const $iframe : HTMLIFrameElement = document.getElementById(`frame_${UNIQUE_ID}`)as HTMLIFrameElement;
-        if ($iframe) {
+        if (!$iframe) {
+            return;
+        }
+
+        $iframe.style.visibility = 'visible';
+        $iframe.style.cssText += `; ${iframeStyle}`;
+
+        if ($iframe.contentDocument) {
             $iframe.contentDocument.body.style.margin = '0';
-            $iframe.style.visibility = 'visible';
-            $iframe.style.cssText += `; ${iframeStyle}`;
         }
     }
 
@@ -150,8 +173,8 @@ MicroState > {
         return (
             <iframe
                 id={`frame_${UNIQUE_ID}`}
-                scrolling="no" 
-                frameBorder="0" 
+                scrolling="no"
+                frameBorder="0"
                 title={iframeTitle}
                 className={`ReactMicro__Frame ${iframeClassName}`}
                 style={{
