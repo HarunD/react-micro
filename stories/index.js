@@ -31,7 +31,7 @@ const PROMISE_A = new Promise((resolve, reject) => {
   }, 300)
 });
 
-storiesOf('Micro', module).add('simple with promise and basic styling of iframe', () => (
+storiesOf('Micro', module).add('Sample with promise and basic styling of iframe', () => (
   <div
     style={{
     backgroundColor: '#3c92a0',
@@ -44,7 +44,7 @@ storiesOf('Micro', module).add('simple with promise and basic styling of iframe'
     }}>Micro with with promise and basic styling of iframe</h1>
     <Micro type="iframe" contentPromise={PROMISE_A} iframeStyle={IFRAME_STYLE_A}/>
   </div>
-)).add('simple with promise and styling of content inside the iframe', () => (
+)).add('Sample with promise and styling of content inside the iframe', () => (
   <div
     style={{
     backgroundColor: '#3c92a0',
